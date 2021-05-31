@@ -1,6 +1,6 @@
 # TODOs
-- [ ] Stonks
-- [ ] Packages
+- [x] Stonks
+- [x] Packages
 - [ ] Fitness
 - [ ] Email
 - [ ] Messages
