@@ -21,56 +21,171 @@ struct ContentView: View {
         .init(name: "Ford Motor Co.", symbol: "F", exchange: "NYSE", currency: "USD", currentPrice: 14.53, previousPrices: [14.49, 14.48, 14.34, 13.89, 14.19, 14.35]),
     ]
     
+    let packages: [Package] = [
+        .init(header: "Package from Nootropicsdepot.com", senderImageName: "genericIcon", senderName: "", statusText: "Waiting for details", itemImageName: "", isDelivered: false),
+        .init(header: "Package from Onnit.com", senderImageName: "genericIcon", senderName: "", statusText: "Delivered", itemImageName: "", isDelivered: true),
+        .init(header: "Package from idrivefulfillment.com", senderImageName: "genericIcon", senderName: "", statusText: "Delivered", itemImageName: "", isDelivered: true),
+        .init(header: "Kindle Paperwhite - Now Waterproof", senderImageName: "amazon", senderName: "Amazon", statusText: "Delivered", itemImageName: "kindlePaperwhite", isDelivered: true),
+        .init(header: "2-Year Accident Protection for Kindle Plan", senderImageName: "amazon", senderName: "Amazon", statusText: "Delivered", itemImageName: "kindleWarranty", isDelivered: true),
+        .init(header: "ABOX Muscle Massage Gun, 30 Special Ways", senderImageName: "amazon", senderName: "Amazon", statusText: "Delivered", itemImageName: "aboxGun", isDelivered: true),
+        .init(header: "Grow Kit", senderImageName: "genericIcon", senderName: "", statusText: "Delivered", itemImageName: "", isDelivered: true),
+    ]
+    
     var body: some View {
-        ScrollView(.vertical) {
-            ForEach(stocks.orderAlphabeticallyBySymbol(), id: \.self) { stock in
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 2.0) {
-                        Text(stock.symbol)
-                            .font(.system(size: 20, weight: .bold))
-                        Text(stock.exchange)
-                            .font(.system(size: 10, weight: .light))
-                            .frame(width: 90, alignment: .leading)
-                    }.padding()
-                    
-                    Spacer()
-                    
-                    HStack {
-                        LineChartView(data: stock.previousPrices, dates: ["yyyy-MM-dd", "2021-05-30", "2021-05-29", "2021-05-28", "2021-05-27", "2021-05-26", "2021-05-25"], hours: [], dragGesture: false)
-                            .frame(width: 100, alignment: .center)
-                    }
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing, spacing: 2.0) {
-                        Text("$\(stock.getCurrentPriceAsString())")
-                            .font(.system(size: 20, weight: .bold))
-                        
-                        HStack(spacing: 1.05) {
-                            Text("\(stock.getMostRecentPriceChangeValue())")
-                                .foregroundColor(stock.priceIncreased() ? .green : .gray)
-                                .font(.system(size: 10, weight: .light))
-                                .lineLimit(1)
-                            Text("\(stock.getMostRecentPriceChangePercentage())")
-                                .foregroundColor(stock.priceIncreased() ? .green : .gray)
-                                .font(.system(size: 10, weight: .light))
-                            Text("\(stock.currency)")
-                                .font(.system(size: 10, weight: .light))
-                        }
-                            
-                    }.padding()
-                }
-                
-                Divider()
-            }
-        }.navigationTitle("Portfolio")
+        NavigationView {
+            
+            PackagesListView(packages: packages)
+
+            // StocksListView(stocks: stocks)
+        }
     }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+// Packages
+
+struct PackagesListView: View {
+    var packages: [Package]
+    
+    var body: some View {
+        List {
+            Section {
+                ForEach(packages, id: \.self) { package in
+                    PackageView(package: package)
+
+                }
+            }.listStyle(GroupedListStyle())
+        }.navigationTitle("Packages")
+    }
+}
+
+struct PackageView: View {
+    var package: Package
+    
+    var body: some View {
+        HStack {
+            ZStack(alignment: .bottomTrailing) {
+                Image(package.senderImageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 48, height: 48)
+                    .overlay(Circle().stroke(Color.gray, lineWidth: 2))
+                    .clipShape(Circle())
+                    .foregroundColor(.white)
+                
+                if package.isDelivered {
+                    Image("checkmark")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 20, height: 20)
+                        .clipShape(Circle())
+                        .foregroundColor(.white)
+                }
+            }
+            
+            VStack(alignment: .leading, spacing: 1.0) {
+                Text(package.header)
+                    .font(.system(size: 13, weight: .bold))
+                    .lineLimit(1)
+                
+                if !package.senderName.isEmpty {
+                    Text(package.senderName)
+                        .font(.system(size: 12, weight: .medium))
+                }
+                
+                Text(package.statusText)
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundColor(package.useGreenText() ? .green : .gray)
+            }
+            
+            Spacer()
+            
+            Image(package.itemImageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 64, height: 64)
+        }
+        
+        
+    }
+}
+
+struct Package: Hashable {
+    let header, senderImageName, senderName, statusText, itemImageName: String
+    let isDelivered: Bool
+}
+
+extension Package  {
+    func useGreenText() -> Bool {
+        return self.isDelivered
+    }
+}
+
+// Stocks
+struct StocksListView: View {
+    var stocks: [Stock]
+    
+    var body: some View {
+        List {
+            Section {
+                ForEach(stocks, id: \.self) { stock in
+                    StockView(stock: stock)
+
+                }
+            }.listStyle(GroupedListStyle())
+        }.navigationTitle("Portfolio")
+    }
+}
+
+
+struct StockView: View {
+    var stock: Stock
+    
+    var body: some View {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 2.0) {
+                Text(stock.symbol)
+                    .font(.system(size: 20, weight: .bold))
+                Text(stock.exchange)
+                    .font(.system(size: 10, weight: .light))
+                    .frame(width: 90, alignment: .leading)
+            }.padding()
+            
+            Spacer()
+            
+            HStack {
+                LineChartView(data: stock.previousPrices, dates: ["yyyy-MM-dd", "2021-05-30", "2021-05-29", "2021-05-28", "2021-05-27", "2021-05-26", "2021-05-25"], hours: [], dragGesture: false)
+                    .frame(width: 100, height: 40, alignment: .center)
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing, spacing: 2.0) {
+                Text("$\(stock.getCurrentPriceAsString())")
+                    .font(.system(size: 20, weight: .bold))
+                
+                HStack(spacing: 1.05) {
+                    Text("\(stock.getMostRecentPriceChangeValue())")
+                        .foregroundColor(stock.priceIncreased() ? .green : .gray)
+                        .font(.system(size: 10, weight: .light))
+                        .lineLimit(1)
+                    Text("\(stock.getMostRecentPriceChangePercentage())")
+                        .foregroundColor(stock.priceIncreased() ? .green : .gray)
+                        .font(.system(size: 10, weight: .light))
+                    Text("\(stock.currency)")
+                        .font(.system(size: 10, weight: .light))
+                }
+                    
+            }.padding()
+        }
+    }
+    
 }
 
 struct Stock: Hashable {
