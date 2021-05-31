@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SwiftUICharts",
+        "repositoryURL": "https://github.com/AppPear/ChartView",
+        "state": {
+          "branch": null,
+          "revision": "9115a992c91fa19cbb4f2241084240d38654a1fc",
+          "version": "1.5.5"
+        }
+      },
+      {
+        "package": "StockCharts",
+        "repositoryURL": "https://github.com/denniscm190/StockCharts.git",
+        "state": {
+          "branch": null,
+          "revision": "e9baa9118dfe956e8d9e34816f9c0059ad0d4fda",
+          "version": "1.1.4"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

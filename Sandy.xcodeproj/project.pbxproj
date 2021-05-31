@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,8 @@
 		16EB33FD2664684800D1B568 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16EB33FC2664684800D1B568 /* Preview Assets.xcassets */; };
 		16EB34082664684800D1B568 /* SandyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EB34072664684800D1B568 /* SandyTests.swift */; };
 		16EB34132664684800D1B568 /* SandyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EB34122664684800D1B568 /* SandyUITests.swift */; };
+		16EB342226647B4B00D1B568 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 16EB342126647B4B00D1B568 /* SwiftUICharts */; };
+		16EB3425266481D000D1B568 /* StockCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 16EB3424266481D000D1B568 /* StockCharts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16EB3425266481D000D1B568 /* StockCharts in Frameworks */,
+				16EB342226647B4B00D1B568 /* SwiftUICharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +150,10 @@
 			dependencies = (
 			);
 			name = Sandy;
+			packageProductDependencies = (
+				16EB342126647B4B00D1B568 /* SwiftUICharts */,
+				16EB3424266481D000D1B568 /* StockCharts */,
+			);
 			productName = Sandy;
 			productReference = 16EB33F22664684300D1B568 /* Sandy.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +225,10 @@
 				Base,
 			);
 			mainGroup = 16EB33E92664684300D1B568;
+			packageReferences = (
+				16EB342026647B4B00D1B568 /* XCRemoteSwiftPackageReference "ChartView" */,
+				16EB3423266481D000D1B568 /* XCRemoteSwiftPackageReference "StockCharts" */,
+			);
 			productRefGroup = 16EB33F32664684300D1B568 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -580,6 +592,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		16EB342026647B4B00D1B568 /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppPear/ChartView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.5;
+			};
+		};
+		16EB3423266481D000D1B568 /* XCRemoteSwiftPackageReference "StockCharts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/denniscm190/StockCharts.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		16EB342126647B4B00D1B568 /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 16EB342026647B4B00D1B568 /* XCRemoteSwiftPackageReference "ChartView" */;
+			productName = SwiftUICharts;
+		};
+		16EB3424266481D000D1B568 /* StockCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 16EB3423266481D000D1B568 /* XCRemoteSwiftPackageReference "StockCharts" */;
+			productName = StockCharts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 16EB33EA2664684300D1B568 /* Project object */;
 }
