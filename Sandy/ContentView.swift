@@ -31,10 +31,21 @@ struct ContentView: View {
         .init(header: "Grow Kit", senderImageName: "genericIcon", senderName: "", statusText: "Delivered", itemImageName: "", isDelivered: true),
     ]
     
+    let songs: [Song] = [
+        .init(title: "DVP", artist: "PUP", album: "The Dream Is Over", songImageName: "album2", isExplicit: true, isFavourited: true),
+        .init(title: "If This Tour Doesn't Kill You, I Will", artist: "PUP", album: "The Dream Is Over", songImageName: "album2", isExplicit: true, isFavourited: true),
+        .init(title: "Skinny Love", artist: "Bon Iver", album: "For Emma, Forever Ago", songImageName: "album1", isExplicit: false, isFavourited: true),
+        .init(title: "The Plan (Fuck Jobs)", artist: "The Front Bottoms", album: "Back On Top", songImageName: "album3", isExplicit: false, isFavourited: true),
+        .init(title: "In Heaven", artist: "Japanese Breakfast", album: "Psychopomp", songImageName: "album5", isExplicit: false, isFavourited: true),
+        .init(title: "June", artist: "Tigers Jaw", album: "spin", songImageName: "album4", isExplicit: false, isFavourited: true),
+    ]
+    
     var body: some View {
         NavigationView {
             
-            PackagesListView(packages: packages)
+            // SongsListView(songs: songs, type: .normal)
+            
+            // PackagesListView(packages: packages)
 
             // StocksListView(stocks: stocks)
         }
@@ -48,8 +59,90 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-// Packages
+// Music
+enum SongViewListType {
+    case normal, popular
+}
 
+struct SongsListView: View {
+    var songs: [Song]
+    var type: SongViewListType
+    
+    var body: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(songs, id: \.self) { song in
+                    SongView(song: song)
+                }
+            }
+        }.navigationTitle("Lieblingssongs")
+    }
+}
+
+struct SongView: View {
+    var song: Song
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            Image(song.songImageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 70, height: 70)
+                .padding(1)
+            
+            VStack {
+                HStack {
+                    Text(song.title)
+                        .font(.system(size: 14, weight: .bold))
+                        .truncationMode(.tail)
+                        .lineLimit(1)
+                    Spacer()
+                }
+                
+                HStack(spacing: 1) {
+                    if song.isExplicit {
+                        Image(systemName: "swift")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 5, height: 5)
+                    }
+                    
+                    Text(song.artist)
+                    Text("•")
+                    Text(song.album)
+                    Spacer()
+                }.font(.system(size: 12, weight: .regular))
+                .foregroundColor(Color.gray)
+            }
+            
+            Spacer()
+            
+            HStack(spacing: 15) {
+                Image(systemName: "icloud")
+                    .resizable()
+                    .scaledToFill()
+                    .foregroundColor(.green)
+                    .frame(width: 16, height: 16)
+                
+                Image(systemName: "icloud")
+                    .resizable()
+                    .scaledToFill()
+                    .foregroundColor(.green)
+                    .frame(width: 16, height: 16)
+            }.padding()
+            
+        }.padding(0.6)
+    }
+}
+
+struct Song: Hashable {
+    let title, artist, album, songImageName: String
+    let isExplicit, isFavourited: Bool
+    var numListens: String = ""
+}
+
+// Packages
 struct PackagesListView: View {
     var packages: [Package]
     
