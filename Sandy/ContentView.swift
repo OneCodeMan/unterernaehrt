@@ -40,6 +40,20 @@ struct ContentView: View {
         .init(title: "June", artist: "Tigers Jaw", album: "spin", songImageName: "album4", isExplicit: false, isFavourited: true),
     ]
     
+    // Dictionary
+    let sentences1: [Sentence] = [
+        .init(originalLanguage: .de, originalText: "Ich hörte ein seltsames Geräusch und öffnete die Tür.", targetLanguage: .en, translatedText: "I heard a strange noise and opened the door."),
+        .init(originalLanguage: .de, originalText: "Von der Küche geht ein seltsamer Geruch aus.", targetLanguage: .en, translatedText: "A strange smell is emanating from the kitchen.")
+    ]
+    
+    let translationWords: [TranslationWord] = [
+        .init(word: Word(text: "strange", type: .adjective), sentences: [Sentence(originalLanguage: .de, originalText: "Ich hörte ein seltsames Geräusch und öffnete die Tür.", targetLanguage: .en, translatedText: "I heard a strange noise and opened the door.")])
+    ]
+    
+    let wordEntries: [WordEntry] = [
+        .init(word: Word(text: "seltsam", type: .adjective), translations: [TranslationWord(word: Word(text: "strange", type: .adjective), sentences: [Sentence(originalLanguage: .de, originalText: "Ich hörte ein seltsames Geräusch und öffnete die Tür.", targetLanguage: .en, translatedText: "I heard a strange noise and opened the door.")])])
+    ]
+     
     var body: some View {
         NavigationView {
             
@@ -47,7 +61,8 @@ struct ContentView: View {
             
             // PackagesListView(packages: packages)
 
-            // StocksListView(stocks: stocks)
+             // StocksListView(stocks: stocks)
+            // WordEntryView(wordEntry: wordEntries[0])
         }
     }
 
@@ -56,6 +71,125 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+// Dictionary
+enum Language {
+    case en, de
+}
+
+enum WordType {
+    case noun, verb, adjective, adverb
+}
+
+struct Word: Hashable {
+    let text: String
+    let type: WordType
+}
+
+struct WordEntry: Hashable {
+    let word: Word
+    let translations: [TranslationWord]
+}
+
+struct WordEntryView: View {
+    let wordEntry: WordEntry
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text(wordEntry.word.text)
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(Color.init(UIColor(rgb: 0x6481A2)))
+                Image(systemName: "airplayaudio")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 10, height: 10)
+                Text(wordEntry.word.getWordTypeText())
+                    .italic()
+                    .font(.system(size: 14, weight: .regular))
+                Spacer()
+            }
+            
+            ForEach(wordEntry.translations, id: \.self) { translation in
+                VStack {
+                    TranslationWordView(translationWord: translation)
+                    
+                    ForEach(translation.sentences, id: \.self) { sentence in
+                        SentenceView(sentence: sentence)
+                    }
+                }
+            }
+        }.padding(.leading)
+    }
+}
+
+struct TranslationWord: Hashable {
+    let word: Word
+    let sentences: [Sentence]
+}
+
+struct TranslationWordView: View {
+    let translationWord: TranslationWord
+    
+    var body: some View {
+        HStack {
+            Text(translationWord.word.text)
+                .font(.system(size: 12, weight: .regular))
+            Text(translationWord.word.getWordTypeText())
+                .italic()
+                .font(.system(size: 10, weight: .medium))
+            Image(systemName: "airplayaudio")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 10, height: 10)
+            Image(systemName: "safari")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 10, height: 10)
+            Spacer()
+        }
+        .padding(.leading)
+    }
+}
+
+struct Sentence: Hashable {
+    let originalLanguage: Language
+    let originalText: String
+    let targetLanguage: Language
+    let translatedText: String
+}
+
+struct SentenceView: View {
+    let sentence: Sentence
+    
+    var body: some View {
+        HStack {
+            Text(sentence.originalText)
+                .foregroundColor(Color.init(UIColor(rgb: 0x6481A2)))
+            Spacer()
+            Text(sentence.translatedText)
+        }
+        .font(.system(size: 10, weight: .regular))
+        .padding()
+    }
+}
+
+extension Word {
+    func getWordTypeText() -> String {
+        switch self.type {
+        case .noun:
+            return ""
+        case .verb:
+            return ""
+        case .adjective:
+            return "adj"
+        case .adverb:
+            return ""
+        default:
+            return ""
+        }
     }
 }
 
@@ -318,5 +452,46 @@ extension Stock {
 extension Array where Element == Stock {
     func orderAlphabeticallyBySymbol() -> [Stock] {
         return self.sorted { $0.symbol < $1.symbol }
+    }
+}
+
+// Helpers
+extension UIColor {
+    
+    // let color = UIColor(red: 0xFF, green: 0xFF, blue: 0xFF)
+    // let color2 = UIColor(rgb: 0xFFFFFF)
+   convenience init(red: Int, green: Int, blue: Int) {
+       assert(red >= 0 && red <= 255, "Invalid red component")
+       assert(green >= 0 && green <= 255, "Invalid green component")
+       assert(blue >= 0 && blue <= 255, "Invalid blue component")
+
+       self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+   }
+
+   convenience init(rgb: Int) {
+       self.init(
+           red: (rgb >> 16) & 0xFF,
+           green: (rgb >> 8) & 0xFF,
+           blue: rgb & 0xFF
+       )
+   }
+    
+    // let color = UIColor(red: 0xFF, green: 0xFF, blue: 0xFF, a: 0.5)
+    convenience init(red: Int, green: Int, blue: Int, withAlpha: CGFloat = 1.0) {
+        self.init(
+            red: CGFloat(red) / 255.0,
+            green: CGFloat(green) / 255.0,
+            blue: CGFloat(blue) / 255.0,
+            alpha: withAlpha
+        )
+    }
+
+    convenience init(rgb: Int, withAlpha: CGFloat = 1.0) {
+        self.init(
+            red: (rgb >> 16) & 0xFF,
+            green: (rgb >> 8) & 0xFF,
+            blue: rgb & 0xFF,
+            withAlpha: withAlpha
+        )
     }
 }
